@@ -1,11 +1,10 @@
 import pytest
 from steamtest.pages.home_page import HomePage
 from steamtest.pages.search_result_page import SearchResultPage
-
-FIRST_TUPLE = ('Witcher', 10)
-SECOND_TUPLE = ('Fallout', 20)
-
-@pytest.mark.parametrize('game_name, n', [FIRST_TUPLE, SECOND_TUPLE])
+import json
+with open('test_data.json', 'r') as f:
+    data = json.load(f)
+@pytest.mark.parametrize('game_name, n', [tuple(data['FIRST_TUPLE']), tuple(data['SECOND_TUPLE'])])
 @pytest.mark.parametrize('driver', ['ru', 'en'], indirect=True)
 def test_first(driver, game_name, n):
     home_page = HomePage(driver)
@@ -16,5 +15,5 @@ def test_first(driver, game_name, n):
     games_list = search_result_page.get_games_list(n)
     prices = search_result_page.get_prices(n)
 
-    assert len(games_list) == n and prices == sorted(prices, reverse=True), f"Фильтр работает некорректно. Получено: {prices}"
-    print(games_list)
+    assert len(games_list) == n, f"Ожидалось {n} игр, но найдено {len(games_list)}"
+    assert prices == sorted(prices, reverse=True), f"Фильтр работает некорректно. Получено: {prices}"

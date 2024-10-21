@@ -1,9 +1,11 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from steamtest.config_reader import ConfigReader
 class BasePage:
+    TIMEOUT = ConfigReader().get_timeout()
     def __init__(self, driver):
         self.driver = driver
-        self.timeout = 10
+        self.timeout = BasePage.TIMEOUT
 
     def find_element(self, by, locator):
         return WebDriverWait(self.driver, self.timeout).until(EC.presence_of_element_located((by, locator)))
