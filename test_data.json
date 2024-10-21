@@ -1,1 +1,10 @@
-{"FIRST_TUPLE": ["Witcher", 10], "SECOND_TUPLE": ["Fallout", 20]}
+{
+  "FIRST_TUPLE": [
+    "Witcher",
+    10
+  ],
+  "SECOND_TUPLE": [
+    "Fallout",
+    20
+  ]
+}

@@ -1,2 +1,7 @@
-{"timeout": 10, "URL": "https://store.steampowered.com/"}
-
+{
+  "timeout": 10,
+  "URL": "https://store.steampowered.com/",
+  "chrome_options": {
+    "language": ""
+  }
+}

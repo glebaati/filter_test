@@ -1,24 +1,27 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from steamtest.config_reader import ConfigReader
+
+
 class WebDriverSingleton:
     _driver = None
-    _instance = None
 
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
-    @staticmethod
-    def get_driver(language):
-        if WebDriverSingleton._driver is None:
+    def __new__(cls, language):
+        if not cls._driver:
             chrome_options = Options()
-            chrome_options.add_argument(f'--lang={language}')
-            WebDriverSingleton._driver = webdriver.Chrome(options=chrome_options)
-            WebDriverSingleton._driver.maximize_window()
-        return WebDriverSingleton._driver
+            for option in ConfigReader().get_value("chrome_options").keys():
+                if option == "language":
+                    chrome_options.add_argument(f"--lang={language}")
+            cls._driver = webdriver.Chrome(options=chrome_options)
+            cls._driver.maximize_window()
+        return cls._driver
 
-    @staticmethod
-    def quit_driver():
-        if WebDriverSingleton._driver:
-            WebDriverSingleton._driver.quit()
-            WebDriverSingleton._driver = None
+    @classmethod
+    def get_driver(cls):
+        return cls._driver
+
+    @classmethod
+    def quit_driver(cls):
+        if cls._driver:
+            cls._driver.quit()
+            cls._driver = None

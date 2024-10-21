@@ -2,9 +2,12 @@ import pytest
 from steamtest.pages.home_page import HomePage
 from steamtest.pages.search_result_page import SearchResultPage
 import json
+
 with open('test_data.json', 'r') as f:
     data = json.load(f)
-@pytest.mark.parametrize('game_name, n', [tuple(data['FIRST_TUPLE']), tuple(data['SECOND_TUPLE'])])
+
+
+@pytest.mark.parametrize('game_name, n', [(data['FIRST_TUPLE']), (data['SECOND_TUPLE'])])
 @pytest.mark.parametrize('driver', ['ru', 'en'], indirect=True)
 def test_first(driver, game_name, n):
     home_page = HomePage(driver)
