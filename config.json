@@ -1,0 +1,12 @@
+{
+  "timeout": 10,
+  "URL": "https://store.steampowered.com/",
+  "chrome_options": {
+    "language": ""
+  },
+  "network_options": {
+    "latency": 5,
+    "download_throughput": 80000,
+    "upload_throughput": 512000
+  }
+}
