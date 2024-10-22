@@ -9,7 +9,7 @@ class WebDriverSingleton:
     def __new__(cls, language):
         if not cls._driver:
             chrome_options = Options()
-            for option in ConfigReader().get_value("chrome_options").keys():
+            for option in ConfigReader()["chrome_options"].keys():
                 if option == "language":
                     chrome_options.add_argument(f"--lang={language}")
             cls._driver = webdriver.Chrome(options=chrome_options)

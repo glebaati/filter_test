@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import re
+from steamtest.config_reader import ConfigReader
 
 
 class SearchResultPage(BasePage):
@@ -13,13 +14,23 @@ class SearchResultPage(BasePage):
     PRICES_LOCATOR_XPATH = (
         By.XPATH,
         "//div[contains(@class, 'discount_prices')]//div[contains(text(), '') and not(contains(@class, 'original_price') or contains(@class, 'your_price'))]")
+    LOAD_ELEMENT_LOCATOR_XPATH = (By.XPATH, "//div[contains(@id, 'searchtag')]")
+    BACKGROUND_OPACITY_LOCATOR_XPATH = (
+        By.XPATH, "//div[contains(@id, 'search_result_container') and contains(@style, 'opacity: 0.5;')]")
+
+    def wait_loaded_page(self):
+        WebDriverWait(self.driver, self.timeout).until(EC.presence_of_element_located(self.LOAD_ELEMENT_LOCATOR_XPATH))
 
     def apply_filter(self):
-        self.click_element(*self.FILTER_BUTTON_LOCATOR_XPATH)
-        self.click_element(*self.PRICE_FILTER_BUTTON_LOCATOR_XPATH)
-        first = WebDriverWait(self.driver, self.timeout).until(
-            EC.presence_of_element_located(self.FIRST_GAME_LOCATOR_XPATH))
-        WebDriverWait(self.driver, self.timeout).until(EC.staleness_of(first))
+        self.driver.set_network_conditions(**ConfigReader()["network_options"])
+        WebDriverWait(self.driver, self.timeout).until(
+            EC.element_to_be_clickable(self.FILTER_BUTTON_LOCATOR_XPATH)).click()
+        WebDriverWait(self.driver, self.timeout).until(
+            EC.element_to_be_clickable(self.PRICE_FILTER_BUTTON_LOCATOR_XPATH)).click()
+        WebDriverWait(self.driver, self.timeout).until(
+            EC.presence_of_element_located(self.BACKGROUND_OPACITY_LOCATOR_XPATH))
+        WebDriverWait(self.driver, self.timeout).until_not(
+            EC.presence_of_element_located(self.BACKGROUND_OPACITY_LOCATOR_XPATH))
 
     def get_games_list(self, n):
         games = WebDriverWait(self.driver, self.timeout).until(
